@@ -1,0 +1,24 @@
+# Zależności
+node_modules/
+
+# Sekrety — szablon .env.example zostaje w repo
+.env
+.env.*
+!.env.example
+
+# Lokalna konfiguracja moderacji (role, kanały, ID serwera)
+src/config/moderation.js
+
+# Logi npm / Node
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System / edytor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/

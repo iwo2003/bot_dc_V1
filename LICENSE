@@ -1,0 +1,76 @@
+Copyright (c) 2026 iwo2003
+
+================================================================================
+POLSKI — Wolna licencja na użytek niekomercyjny
+================================================================================
+
+Każdy może korzystać z tego oprogramowania i dokumentacji (dalej: „Oprogramowanie”)
+bezpłatnie, pod warunkiem przestrzegania poniższych zasad:
+
+1. DOZWOLONE
+   - używanie, kopiowanie, modyfikowanie i rozpowszechnianie kodu,
+   - wykorzystanie w projektach osobistych, edukacyjnych, portfolio i na serwerach
+     Discord (również społecznościach z dotacjami, Patreonem lub sklepem serwera),
+   - publikowanie zmodyfikowanych wersji (forki), o ile spełnione są warunki poniżej.
+
+2. ZAKAZ UŻYTKU KOMERCYJNEGO
+   Oprogramowania NIE WOLNO wykorzystywać w celach zarobkowych ani komercyjnych,
+   w tym m.in. do:
+   - sprzedaży, odsprzedaży, wynajmu lub licencjonowania bota za opłatą,
+   - oferowania bota jako płatnej usługi (np. bot-as-a-service, hosting premium),
+   - pakietów premium, w których sam bot lub jego kod jest przedmiotem opłaty,
+   - materiałów promocyjnych płatnych firm trzecich bez osobnej zgody autora.
+
+   Samo korzystanie z bota na serwerze Discord, który zarabia w inny sposób
+   (np. subskrypcje społeczności, sklep serwera), nie jest automatycznie
+   uznawane za użytek komercyjny tego Oprogramowania — zakaz dotyczy
+   bezpośredniego czerpania zysku z samego bota lub jego kodu.
+
+3. WYMAGANA ATRYBUCJA
+   Przy każdym wykorzystaniu kodu (w całości lub w znaczącej części) należy:
+   - zachować niniejszą informację o licencji i copyright,
+   - umieścić czytelny link do oryginalnego repozytorium autora:
+     https://github.com/iwo2003/bot_dc_V1
+   - link musi być widoczny w pliku LICENSE lub README
+     LUB w informacji o bocie dostępnej dla użytkowników (np. komenda / licencja).
+
+4. BRAK GWARANCJI
+   Oprogramowanie jest dostarczane „TAK JAK JEST”, bez jakiejkolwiek gwarancji.
+   Autor nie ponosi odpowiedzialności za szkody wynikłe z użycia Oprogramowania.
+
+================================================================================
+ENGLISH — Non-Commercial Source License
+================================================================================
+
+Anyone may use this software and associated documentation (the "Software")
+free of charge, provided the following conditions are met:
+
+1. PERMITTED USE
+   - use, copy, modify and distribute the code,
+   - use in personal, educational, portfolio and Discord server projects
+     (including communities with donations, Patreon or a server shop),
+   - publish modified versions (forks), as long as the conditions below are met.
+
+2. NO COMMERCIAL USE
+   The Software MUST NOT be used for commercial or profit purposes, including:
+   - selling, reselling, renting or licensing the bot for a fee,
+   - offering the bot as a paid service (e.g. bot-as-a-service, premium hosting),
+   - premium packages where the bot or its source code is the paid product,
+   - paid promotional materials for third parties without the author's consent.
+
+   Using the bot on a Discord server that earns money in other ways
+   (e.g. community subscriptions, a server shop) is not automatically
+   considered commercial use of this Software — the restriction applies
+   to direct profit from the bot or its source code.
+
+3. ATTRIBUTION REQUIRED
+   When using the code (in whole or in substantial part), you must:
+   - retain this license notice and copyright information,
+   - include a clear link to the author's original repository:
+     https://github.com/iwo2003/bot_dc_V1
+   - the link must be visible in LICENSE or README
+     OR in bot information available to end users (e.g. a /license command).
+
+4. NO WARRANTY
+   The Software is provided "AS IS", without warranty of any kind.
+   The author is not liable for any damages arising from use of the Software.
