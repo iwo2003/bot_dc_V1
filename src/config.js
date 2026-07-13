@@ -13,3 +13,8 @@ export const DB_PORT = Number(process.env.DB_PORT) || 3306
 export const DB_USER = process.env.DB_USER?.trim() || 'root'
 export const DB_PASSWORD = process.env.DB_PASSWORD ?? ''
 export const DB_NAME = process.env.DB_NAME?.trim() || 'bot_dc'
+
+/** Klucze API gier — opcjonalne; bez klucza dana gra zwróci komunikat w /stats */
+export const RIOT_API_KEY = process.env.RIOT_API_KEY?.trim() || ''
+export const STEAM_API_KEY = process.env.STEAM_API_KEY?.trim() || ''
+export const FORTNITE_API_KEY = process.env.FORTNITE_API_KEY?.trim() || ''

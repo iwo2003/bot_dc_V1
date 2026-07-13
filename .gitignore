@@ -9,6 +9,8 @@ node_modules/
 # Lokalna konfiguracja (role, kanały, ID serwera)
 src/config/moderation.js
 src/config/auto-channel.js
+src/config/anti-raid.js
+src/config/games.js
 
 # Logi npm / Node
 npm-debug.log*

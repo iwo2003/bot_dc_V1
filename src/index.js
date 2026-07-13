@@ -21,6 +21,8 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
     ],
 })
 
@@ -36,6 +38,7 @@ client.eventHandler = eventHandler
 await Promise.all([
     commandHandler.loadCommand('./commands/util/test/ping.command.js'),
     commandHandler.loadCommand('./commands/util/info/licencja.command.js'),
+    commandHandler.loadCommand('./commands/util/info/stats.command.js'),
     commandHandler.loadCommand('./commands/util/admin/ban.command.js'),
     commandHandler.loadCommand('./commands/util/admin/kick.command.js'),
     commandHandler.loadCommand('./commands/util/admin/mute.command.js'),

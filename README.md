@@ -1,6 +1,6 @@
 # bot-dc
 
-Bot Discord do moderacji serwera — komendy slash, logi moderacji, tymczasowe kanały głosowe z panelem konfiguracyjnym oraz system ostrzeżeń (warnów) z opcjonalnym zapisem w MySQL.
+Bot Discord do moderacji serwera — komendy slash, logi moderacji, anty-raid/anty-spam, tymczasowe kanały głosowe z panelem konfiguracyjnym oraz system ostrzeżeń (warnów) z opcjonalnym zapisem w MySQL.
 
 ## Funkcje
 
@@ -10,6 +10,8 @@ Bot Discord do moderacji serwera — komendy slash, logi moderacji, tymczasowe k
 - **Uprawnienia** — role z configu, przypisane komendy per rola/osoba oraz natywne uprawnienia Discord
 - **Tymczasowe kanały głosowe** — kanał-hub tworzy prywatny kanał; pusty kanał jest usuwany automatycznie
 - **Panel właściciela** — embed z przyciskami w chacie głosowym (Text in Voice)
+- **Anty-raid / anty-spam** — ban botów reklamowych, wykrywanie raidów, spamu i podejrzanych linków
+- **Statystyki gier** — `/stats` dla LoL, Valorant, CS2, Minecraft, Fortnite (embed + obrazek)
 - **MySQL opcjonalne** — bot startuje bez bazy; warny wymagają MySQL
 - **Jedna gildia** — komendy rejestrowane tylko na wyznaczonym serwerze (`GUILD_ID`)
 
@@ -106,11 +108,60 @@ cp src/config/auto-channel.example.js src/config/auto-channel.js
 
 Plik `auto-channel.js` jest w `.gitignore`.
 
-### 5. Uprawnienia bota na Discordzie
+### 5. Anty-raid / anty-spam (opcjonalnie)
+
+```bash
+cp src/config/anti-raid.example.js src/config/anti-raid.js
+```
+
+| Moduł | Opis |
+|-------|------|
+| `antiBot` | Automatyczny ban nieautoryzowanych botów (whitelist w `allowedBotIds`) |
+| `antiRaid` | Wykrywa masowe dołączanie; w trybie raid karze młode konta (ban/kick) |
+| `antiSpam` | Limit wiadomości w czasie — timeout, kick lub ban |
+| `antiLink` | Blokuje scam linki, phishing i zaproszenia Discord |
+
+| Pole | Opis |
+|------|------|
+| `enabled` | Włącza cały moduł |
+| `logChannelId` | Kanał logów (puste = `adminLogsChannelId` z moderation.js) |
+| `immuneRoleIds` / `immuneUserIds` | Zwolnieni z filtrów (admini i moderatorzy z moderation.js też) |
+
+Plik `anti-raid.js` jest w `.gitignore`.
+
+### 6. Statystyki gier (opcjonalnie)
+
+```bash
+cp src/config/games.example.js src/config/games.js
+```
+
+W `.env` ustaw klucze API (opcjonalnie per gra):
+
+| Zmienna | Gra | Gdzie uzyskać klucz |
+|---------|-----|---------------------|
+| `RIOT_API_KEY` | LoL, Valorant | [developer.riotgames.com](https://developer.riotgames.com/) |
+| `STEAM_API_KEY` | CS2 | [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey) |
+| `FORTNITE_API_KEY` | Fortnite | [fortnite-api.com](https://fortnite-api.com/) |
+| — | Minecraft | Bez klucza (Mojang API + Crafatar) |
+
+**Komenda:** `/stats gra:... gracz:... region:...`
+
+| Gra | Format `gracz` | Region (opcjonalnie) |
+|-----|----------------|----------------------|
+| LoL | `Nick#TAG` | `eune`, `euw`, `na`… |
+| Valorant | `Nick#TAG` | `eu`, `na`, `ap`… |
+| CS2 | Steam ID, vanity lub URL profilu | — |
+| Minecraft | Nick Java Edition | — |
+| Fortnite | Nick Epic | — |
+
+Plik `games.js` jest w `.gitignore`.
+
+### 7. Uprawnienia bota na Discordzie
 
 W Developer Portal włącz intenty:
 
 - **Server Members Intent** (wymagany)
+- **Message Content Intent** (wymagany dla anty-spam i anty-link)
 - **Guild Voice States** (wymagany dla kanałów głosowych)
 
 Na serwerze bot potrzebuje uprawnień m.in.:
@@ -118,6 +169,7 @@ Na serwerze bot potrzebuje uprawnień m.in.:
 - Ban Members
 - Kick Members
 - Moderate Members
+- Manage Messages (usuwanie spamu / linków)
 - Manage Channels
 - Send Messages (logi + Text in Voice w kanałach głosowych)
 - Connect (dołączanie do kanałów głosowych)
@@ -143,6 +195,7 @@ Po zalogowaniu bot automatycznie rejestruje komendy slash na serwerze z `GUILD_I
 |---------|------|
 | `/ping` | Test działania bota |
 | `/licencja` | Informacje o licencji i warunkach użytkowania (dla wszystkich) |
+| `/stats` | Statystyki gracza z LoL, Valorant, CS2, Minecraft lub Fortnite (dla wszystkich) |
 | `/ban` | Ban użytkownika (opcjonalnie usuwanie wiadomości 0–7 dni) |
 | `/kick` | Wyrzucenie z serwera |
 | `/mute` | Wyciszenie (timeout, max 28 dni) |
@@ -200,6 +253,25 @@ Wymaga włączonego **Text in Voice** na serwerze Discord. Panel wysyłany jest 
 
 Jeśli Text in Voice nie jest dostępny, panel trafia na **DM** właściciela (`panel.fallbackDm: true`).
 
+## Anty-raid / anty-spam
+
+### Anty-bot
+Nieautoryzowany bot dołączający na serwer jest **automatycznie banowany** (chyba że jest na liście `allowedBotIds`).
+
+### Anty-raid
+Gdy w krótkim czasie dołączy zbyt wielu użytkowników (`joinThreshold` w `joinWindowSeconds`), włącza się **tryb raid**. W tym trybie konta młodsze niż `minAccountAgeDays` są banowane lub wyrzucane.
+
+### Anty-spam
+Bot liczy wiadomości użytkownika w oknie czasowym. Po przekroczeniu limitu usuwa wiadomość i nakłada karę (timeout / kick / ban).
+
+### Anty-link
+Skanuje treść wiadomości pod kątem:
+- podejrzanych domen (phishing, fałszywy Nitro, fałszywy Steam),
+- wzorców scam w tekście,
+- nieautoryzowanych zaproszeń Discord (`discord.gg`, `discord.com/invite`).
+
+Akcje i listy domen konfigurujesz w `anti-raid.js`. Zdarzenia trafiają na kanał logów.
+
 ## Struktura projektu
 
 ```
@@ -209,21 +281,33 @@ src/
 ├── EventHandler.js               # Auto-ładowanie eventów
 ├── commands/util/
 │   ├── test/ping.command.js
+│   ├── info/licencja.command.js
 │   └── admin/                    # ban, kick, mute, unmute, warn, unwarn
 ├── config/
-│   ├── moderation.example.js     # Szablon configu moderacji
-│   ├── auto-channel.example.js   # Szablon configu kanałów głosowych
-│   └── load-config.js            # Loader moderation.js + auto-channel.js
+│   ├── moderation.example.js
+│   ├── auto-channel.example.js
+│   ├── anti-raid.example.js
+│   ├── games.example.js
+│   └── load-config.js
 ├── db/
-│   ├── client.js                 # Pool MySQL + migracja schematu
+│   ├── client.js
 │   └── warny.repo.js
 ├── events/
 │   ├── interaction-create.event.js
+│   ├── message-create.event.js
+│   ├── guild-member-add.event.js
 │   ├── voice-state-update.event.js
 │   └── bot-logged-in.event.js
 ├── features/
 │   ├── warny.service.js
 │   ├── moderation-log.service.js
+│   ├── anti-raid.service.js
+│   ├── games/
+│   │   ├── games-stats.service.js
+│   │   ├── riot.provider.js
+│   │   ├── steam.provider.js
+│   │   ├── minecraft.provider.js
+│   │   └── fortnite.provider.js
 │   ├── auto-channel.service.js
 │   └── auto-channel-panel.service.js
 └── utils/                        # Uprawnienia, anti-crash, helpery
@@ -236,6 +320,8 @@ src/
 | `.env` | Token bota i dane MySQL |
 | `src/config/moderation.js` | Lokalne ID ról i kanałów |
 | `src/config/auto-channel.js` | Lokalne ID kanałów głosowych |
+| `src/config/anti-raid.js` | Lokalna konfiguracja anty-raid |
+| `src/config/games.js` | Lokalna konfiguracja gier |
 | `node_modules/` | Zależności npm |
 
 ## Licencja

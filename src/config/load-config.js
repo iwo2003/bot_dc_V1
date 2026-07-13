@@ -11,6 +11,12 @@ let moderationCached = null
 /** @type {import('./auto-channel.example.js').default | null} */
 let autoChannelCached = null
 
+/** @type {import('./anti-raid.example.js').default | null} */
+let antiRaidCached = null
+
+/** @type {import('./games.example.js').default | null} */
+let gamesCached = null
+
 /**
  * @param {string} localFile
  * @param {string} exampleFile
@@ -20,6 +26,14 @@ let autoChannelCached = null
 async function loadLocalConfig(localFile, exampleFile, logTag, warnMessage) {
     const localPath = path.join(__dirname, localFile)
     const examplePath = path.join(__dirname, exampleFile)
+
+    if (!fs.existsSync(localPath) && !fs.existsSync(examplePath)) {
+        consola.error(
+            `[${logTag}] Brak ${localFile} i ${exampleFile} w src/config/.`,
+        )
+        throw new Error(`Brak pliku konfiguracji: ${exampleFile}`)
+    }
+
     const target = fs.existsSync(localPath) ? localPath : examplePath
 
     if (!fs.existsSync(localPath)) {
@@ -51,4 +65,28 @@ export async function getAutoChannelConfig() {
         'Brak src/config/auto-channel.js — używam auto-channel.example.js. Skopiuj szablon i uzupełnij ID.',
     )
     return autoChannelCached
+}
+
+export async function getAntiRaidConfig() {
+    if (antiRaidCached) return antiRaidCached
+
+    antiRaidCached = await loadLocalConfig(
+        'anti-raid.js',
+        'anti-raid.example.js',
+        'anti-raid',
+        'Brak src/config/anti-raid.js — używam anti-raid.example.js. Skopiuj szablon i uzupełnij.',
+    )
+    return antiRaidCached
+}
+
+export async function getGamesConfig() {
+    if (gamesCached) return gamesCached
+
+    gamesCached = await loadLocalConfig(
+        'games.js',
+        'games.example.js',
+        'games',
+        'Brak src/config/games.js — używam games.example.js. Skopiuj szablon i uzupełnij.',
+    )
+    return gamesCached
 }
