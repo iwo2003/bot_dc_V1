@@ -142,6 +142,7 @@ Po zalogowaniu bot automatycznie rejestruje komendy slash na serwerze z `GUILD_I
 | Komenda | Opis |
 |---------|------|
 | `/ping` | Test działania bota |
+| `/licencja` | Informacje o licencji i warunkach użytkowania (dla wszystkich) |
 | `/ban` | Ban użytkownika (opcjonalnie usuwanie wiadomości 0–7 dni) |
 | `/kick` | Wyrzucenie z serwera |
 | `/mute` | Wyciszenie (timeout, max 28 dni) |

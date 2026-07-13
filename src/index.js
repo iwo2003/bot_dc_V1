@@ -35,6 +35,7 @@ client.eventHandler = eventHandler
 
 await Promise.all([
     commandHandler.loadCommand('./commands/util/test/ping.command.js'),
+    commandHandler.loadCommand('./commands/util/info/licencja.command.js'),
     commandHandler.loadCommand('./commands/util/admin/ban.command.js'),
     commandHandler.loadCommand('./commands/util/admin/kick.command.js'),
     commandHandler.loadCommand('./commands/util/admin/mute.command.js'),
