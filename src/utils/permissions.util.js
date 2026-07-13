@@ -1,5 +1,5 @@
 import { PermissionFlagsBits } from 'discord.js'
-import { getModerationConfig } from '../config/load-moderation.js'
+import { getModerationConfig } from '../config/load-config.js'
 
 /** @type {Record<string, bigint | bigint[] | null>} */
 export const MOD_COMMAND_PERMISSIONS = {

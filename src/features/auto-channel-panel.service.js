@@ -9,7 +9,7 @@ import {
     TextInputStyle,
 } from 'discord.js'
 import { consola } from 'consola'
-import { getAutoChannelConfig } from '../config/load-auto-channel.js'
+import { getAutoChannelConfig } from '../config/load-config.js'
 import {
     applyOwnerPermissions,
     getActiveChannelMeta,

@@ -1,6 +1,6 @@
 import { ChannelType, PermissionFlagsBits } from 'discord.js'
 import { consola } from 'consola'
-import { getAutoChannelConfig } from '../config/load-auto-channel.js'
+import { getAutoChannelConfig } from '../config/load-config.js'
 
 /** @type {Map<string, { ownerId: string, guildId: string, locked?: boolean, hidden?: boolean }>} */
 const activeChannels = new Map()

@@ -212,8 +212,7 @@ src/
 ├── config/
 │   ├── moderation.example.js     # Szablon configu moderacji
 │   ├── auto-channel.example.js   # Szablon configu kanałów głosowych
-│   ├── load-moderation.js
-│   └── load-auto-channel.js
+│   └── load-config.js            # Loader moderation.js + auto-channel.js
 ├── db/
 │   ├── client.js                 # Pool MySQL + migracja schematu
 │   └── warny.repo.js

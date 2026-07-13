@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js'
 import { consola } from 'consola'
-import { getModerationConfig } from '../config/load-moderation.js'
+import { getModerationConfig } from '../config/load-config.js'
 import { getPool } from '../db/client.js'
 import * as warnRepo from '../db/warny.repo.js'
 import { sendModerationLogs } from './moderation-log.service.js'

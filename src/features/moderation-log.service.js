@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { getModerationConfig } from '../config/load-moderation.js'
+import { getModerationConfig } from '../config/load-config.js'
 
 const ACTION_LABELS = {
     ban: 'Ban',

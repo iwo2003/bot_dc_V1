@@ -1,6 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import { sendModerationLogs } from '../../../features/moderation-log.service.js'
-import { getModerationConfig } from '../../../config/load-moderation.js'
+import { getModerationConfig } from '../../../config/load-config.js'
 import { MAX_TIMEOUT_MS, assertNotSelf } from '../../../utils/moderation.util.js'
 import { assertCommandAccess } from '../../../utils/permissions.util.js'
 

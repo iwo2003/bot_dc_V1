@@ -1,6 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import { sendModerationLogs } from '../../../features/moderation-log.service.js'
-import { getModerationConfig } from '../../../config/load-moderation.js'
+import { getModerationConfig } from '../../../config/load-config.js'
 import {
     MAX_DELETE_MESSAGE_SECONDS,
     assertNotSelf,
