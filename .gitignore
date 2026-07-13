@@ -6,8 +6,9 @@ node_modules/
 .env.*
 !.env.example
 
-# Lokalna konfiguracja moderacji (role, kanały, ID serwera)
+# Lokalna konfiguracja (role, kanały, ID serwera)
 src/config/moderation.js
+src/config/auto-channel.js
 
 # Logi npm / Node
 npm-debug.log*

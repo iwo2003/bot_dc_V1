@@ -1,18 +1,40 @@
 import { Collection, Events } from 'discord.js'
 import { consola } from 'consola'
 import { DEFAULT_COMMAND_COOLDOWN, GUILD_ID } from '../config.js'
+import { handleAutoChannelPanelInteraction } from '../features/auto-channel-panel.service.js'
 
 export default {
     name: Events.InteractionCreate,
     async execute(interaction) {
-        if (!interaction.isChatInputCommand()) return
+        if (GUILD_ID && interaction.guildId && interaction.guildId !== GUILD_ID) {
+            if (interaction.isRepliable()) {
+                return interaction.reply({
+                    content:
+                        'Ten bot działa tylko na wyznaczonym serwerze — tu nie możesz używać komend.',
+                    ephemeral: true,
+                })
+            }
+            return
+        }
 
-        if (GUILD_ID && interaction.guildId !== GUILD_ID) {
-            return interaction.reply({
-                content:
-                    'Ten bot działa tylko na wyznaczonym serwerze — tu nie możesz używać komend.',
-                ephemeral: true,
-            })
+        if (!interaction.isChatInputCommand()) {
+            try {
+                const handled = await handleAutoChannelPanelInteraction(interaction)
+                if (handled) return
+            } catch (error) {
+                if (!String(error?.message ?? error).includes('Unknown interaction')) {
+                    consola.error('[auto-channel] interaction:', error)
+                }
+                if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
+                    await interaction
+                        .reply({
+                            content: 'Wystąpił błąd podczas obsługi panelu kanału.',
+                            ephemeral: true,
+                        })
+                        .catch(() => {})
+                }
+            }
+            return
         }
 
         const { commandName, client } = interaction

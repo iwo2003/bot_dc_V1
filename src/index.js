@@ -17,7 +17,11 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
 AntiCrash.init()
 
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildVoiceStates,
+    ],
 })
 
 consola.start(`Starting app '${packageJson.name}'`)

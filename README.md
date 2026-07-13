@@ -1,6 +1,6 @@
 # bot-dc
 
-Bot Discord do moderacji serwera — komendy slash, logi moderacji i konfigurowalny system ostrzeżeń (warnów) z opcjonalnym zapisem w MySQL.
+Bot Discord do moderacji serwera — komendy slash, logi moderacji, tymczasowe kanały głosowe z panelem konfiguracyjnym oraz system ostrzeżeń (warnów) z opcjonalnym zapisem w MySQL.
 
 ## Funkcje
 
@@ -8,6 +8,8 @@ Bot Discord do moderacji serwera — komendy slash, logi moderacji i konfigurowa
 - **System warnów** — progresywne konsekwencje (mute, ban czasowy, ban permanentny)
 - **Logi** — osobne kanały dla użytkowników i administracji
 - **Uprawnienia** — role z configu, przypisane komendy per rola/osoba oraz natywne uprawnienia Discord
+- **Tymczasowe kanały głosowe** — kanał-hub tworzy prywatny kanał; pusty kanał jest usuwany automatycznie
+- **Panel właściciela** — embed z przyciskami w chacie głosowym (Text in Voice)
 - **MySQL opcjonalne** — bot startuje bez bazy; warny wymagają MySQL
 - **Jedna gildia** — komendy rejestrowane tylko na wyznaczonym serwerze (`GUILD_ID`)
 
@@ -72,18 +74,53 @@ W `moderation.js` ustaw m.in.:
 
 Plik `moderation.js` jest w `.gitignore` i nie trafia do repozytorium.
 
-### 4. Uprawnienia bota na Discordzie
+### 4. Tymczasowe kanały głosowe (opcjonalnie)
+
+```bash
+cp src/config/auto-channel.example.js src/config/auto-channel.js
+```
+
+#### Podstawowa konfiguracja
+
+| Pole | Opis |
+|------|------|
+| `enabled` | `true` — włącza funkcję |
+| `hubChannelId` | ID kanału głosowego-hub (np. „➕ Utwórz kanał”) |
+| `categoryId` | Kategoria na nowe kanały (puste = jak hub) |
+| `nameTemplate` | Szablon nazwy: `{user}`, `{nick}`, `{id}` |
+| `userLimit` | Domyślny limit osób przy tworzeniu (0 = bez limitu) |
+| `bitrate` | Bitrate przy tworzeniu kanału w bps (domyślnie `64000`) |
+| `deleteDelayMs` | Opóźnienie przed usunięciem pustego kanału (ms) |
+| `oneChannelPerUser` | Jeden aktywny kanał na użytkownika |
+| `ownerPermissions` | Dodatkowe uprawnienia właściciela (`manageChannel`, `moveMembers`, `muteMembers`) |
+
+**Przykład szablonu:** `🔊 {user}` → `🔊 JanKowalski`
+
+#### Panel konfiguracyjny (`panel`)
+
+| Pole | Opis |
+|------|------|
+| `panel.enabled` | Włącza/wyłącza panel przy tworzeniu kanału |
+| `panel.embedColor` | Kolor embeda (hex, np. `0x5865f2`) |
+| `panel.fallbackDm` | Gdy Text in Voice nie działa — wyślij panel na DM |
+
+Plik `auto-channel.js` jest w `.gitignore`.
+
+### 5. Uprawnienia bota na Discordzie
 
 W Developer Portal włącz intenty:
 
 - **Server Members Intent** (wymagany)
+- **Guild Voice States** (wymagany dla kanałów głosowych)
 
 Na serwerze bot potrzebuje uprawnień m.in.:
 
 - Ban Members
 - Kick Members
 - Moderate Members
-- Send Messages (kanały logów)
+- Manage Channels
+- Send Messages (logi + Text in Voice w kanałach głosowych)
+- Connect (dołączanie do kanałów głosowych)
 
 ## Uruchomienie
 
@@ -130,20 +167,76 @@ Domyślnie 5 poziomów ostrzeżeń — każdy kolejny to dłuższe wyciszenie:
 - Możliwe akcje w configu: `mute`, `ban_temp`, `ban_perm`, `none`.
 - Tymczasowe bany są odbanowywane automatycznie (scheduler co 90 s).
 
+## Tymczasowe kanały głosowe
+
+### Jak to działa
+
+1. Utwórz kanał głosowy-hub (np. „➕ Utwórz kanał”) i wpisz jego ID w `hubChannelId`.
+2. Użytkownik wchodzi na hub → bot tworzy kanał według `nameTemplate` i przenosi go tam.
+3. Właściciel dostaje uprawnienie **Zarządzanie kanałem**.
+4. Bot wysyła **panel konfiguracyjny** w chacie kanału (Text in Voice).
+5. Gdy kanał opustoszeje, bot usuwa go po `deleteDelayMs` (domyślnie 1,5 s).
+
+### Panel właściciela (Text in Voice)
+
+Wymaga włączonego **Text in Voice** na serwerze Discord. Panel wysyłany jest **tylko przy tworzeniu** nowego kanału. Korzystać może **wyłącznie właściciel**.
+
+| Rząd | Akcje |
+|------|-------|
+| 1 | 🔒 Zablokuj · 🔓 Odblokuj · 👁 Ukryj · 👁‍🗨 Pokaż |
+| 2 | ✏️ Zmień nazwę (modal) · 👥 Ustaw limit (modal) |
+| 3 | 👢 Wyrzuć (menu) · 👑 Przekaż właściciela (menu) · 🗑 Usuń kanał |
+
+| Akcja | Opis |
+|-------|------|
+| Zablokuj / Odblokuj | Blokuje lub odblokowuje dołączanie dla @everyone |
+| Ukryj / Pokaż | Ukrywa lub pokazuje kanał dla @everyone |
+| Zmień nazwę | Modal — nowa nazwa kanału (max 100 znaków) |
+| Ustaw limit | Modal — limit osób (0–99, 0 = bez limitu) |
+| Wyrzuć | Menu — wyrzuca wybranego użytkownika z kanału |
+| Przekaż właściciela | Menu — przekazuje uprawnienia użytkownikowi na kanale |
+| Usuń kanał | Potwierdzenie i natychmiastowe usunięcie |
+
+Jeśli Text in Voice nie jest dostępny, panel trafia na **DM** właściciela (`panel.fallbackDm: true`).
+
 ## Struktura projektu
 
 ```
 src/
-├── index.js                 # Punkt wejścia
-├── CommandHandler.js        # Ładowanie i rejestracja slash commands
-├── EventHandler.js          # Obsługa eventów Discord
-├── commands/util/           # Komendy (test, admin)
-├── config/                  # Config moderacji + load-moderation.js
-├── db/                      # Klient MySQL i repozytorium warnów
-├── events/                  # interactionCreate, ready, status
-├── features/                # warny.service, moderation-log.service
-└── utils/                   # Uprawnienia, anti-crash, helpery
+├── index.js                      # Punkt wejścia, intenty, ładowanie komend
+├── CommandHandler.js             # Ładowanie i rejestracja slash commands
+├── EventHandler.js               # Auto-ładowanie eventów
+├── commands/util/
+│   ├── test/ping.command.js
+│   └── admin/                    # ban, kick, mute, unmute, warn, unwarn
+├── config/
+│   ├── moderation.example.js     # Szablon configu moderacji
+│   ├── auto-channel.example.js   # Szablon configu kanałów głosowych
+│   ├── load-moderation.js
+│   └── load-auto-channel.js
+├── db/
+│   ├── client.js                 # Pool MySQL + migracja schematu
+│   └── warny.repo.js
+├── events/
+│   ├── interaction-create.event.js
+│   ├── voice-state-update.event.js
+│   └── bot-logged-in.event.js
+├── features/
+│   ├── warny.service.js
+│   ├── moderation-log.service.js
+│   ├── auto-channel.service.js
+│   └── auto-channel-panel.service.js
+└── utils/                        # Uprawnienia, anti-crash, helpery
 ```
+
+## Pliki ignorowane przez Git
+
+| Plik | Powód |
+|------|-------|
+| `.env` | Token bota i dane MySQL |
+| `src/config/moderation.js` | Lokalne ID ról i kanałów |
+| `src/config/auto-channel.js` | Lokalne ID kanałów głosowych |
+| `node_modules/` | Zależności npm |
 
 ## Licencja
 
