@@ -30,6 +30,19 @@ async function ensureSchema(p) {
             PRIMARY KEY (guild_id, user_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `)
+    await p.execute(`
+        CREATE TABLE IF NOT EXISTS tickets (
+            channel_id VARCHAR(32) NOT NULL,
+            guild_id VARCHAR(32) NOT NULL,
+            user_id VARCHAR(32) NOT NULL,
+            ticket_type VARCHAR(64) NOT NULL,
+            claimed_by VARCHAR(32) NULL DEFAULT NULL,
+            status ENUM('open', 'claimed', 'closed') NOT NULL DEFAULT 'open',
+            created_at BIGINT NOT NULL,
+            PRIMARY KEY (channel_id),
+            INDEX idx_tickets_user (guild_id, user_id, status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `)
 }
 
 /**
@@ -39,7 +52,7 @@ async function ensureSchema(p) {
 export async function initDatabase() {
     if (!DB_HOST) {
         consola.warn(
-            '[db] Brak DB_HOST w .env — bot działa bez MySQL (warny nie są zapisywane).',
+            '[db] Brak DB_HOST w .env — bot działa bez MySQL (warny i tickety wymagają bazy).',
         )
         return
     }

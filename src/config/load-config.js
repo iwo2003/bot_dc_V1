@@ -90,3 +90,35 @@ export async function getGamesConfig() {
     )
     return gamesCached
 }
+
+/** @type {object | null} */
+let ticketsCached = null
+
+/**
+ * Ładuje tickets.json lub tickets.example.json (format JSON).
+ */
+export async function getTicketsConfig() {
+    if (ticketsCached) return ticketsCached
+
+    const localPath = path.join(__dirname, 'tickets.json')
+    const examplePath = path.join(__dirname, 'tickets.example.json')
+
+    if (!fs.existsSync(localPath) && !fs.existsSync(examplePath)) {
+        throw new Error('Brak tickets.json i tickets.example.json w src/config/.')
+    }
+
+    const target = fs.existsSync(localPath) ? localPath : examplePath
+
+    if (!fs.existsSync(localPath)) {
+        consola.warn(
+            '[tickets] Brak src/config/tickets.json — używam tickets.example.json. Skopiuj szablon i uzupełnij.',
+        )
+    }
+
+    ticketsCached = JSON.parse(fs.readFileSync(target, 'utf8'))
+    return ticketsCached
+}
+
+export function clearTicketsConfigCache() {
+    ticketsCached = null
+}

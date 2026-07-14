@@ -1,0 +1,83 @@
+{
+    "enabled": true,
+    "staffRoleIds": [],
+    "transcriptLogChannelId": "",
+    "closeDelayMs": 5000,
+    "channelNameTemplate": "ticket-{user}",
+    "panel": {
+        "title": "Centrum zgłoszeń",
+        "description": "Wybierz kategorię z menu poniżej, aby otworzyć ticket.\nAdministracja odpowie tak szybko, jak to możliwe.",
+        "color": 5793266,
+        "footer": "Jeden aktywny ticket na użytkownika"
+    },
+    "welcome": {
+        "title": "Ticket — {type}",
+        "description": "Witaj {user}! Opisz swój problem — administracja wkrótce się odezwie.",
+        "color": 5793266
+    },
+    "tickets": [
+        {
+            "id": "pomoc",
+            "label": "Pomoc",
+            "description": "Pytania techniczne i wsparcie",
+            "emoji": "❓",
+            "category_id": "",
+            "questions": [
+                {
+                    "custom_id": "temat",
+                    "label": "Temat zgłoszenia",
+                    "style": "short",
+                    "placeholder": "Np. Problem z rangą"
+                },
+                {
+                    "custom_id": "opis",
+                    "label": "Opisz problem",
+                    "style": "paragraph",
+                    "placeholder": "Podaj jak najwięcej szczegółów..."
+                }
+            ]
+        },
+        {
+            "id": "rekrutacja",
+            "label": "Rekrutacja",
+            "description": "Aplikuj do zespołu serwera",
+            "emoji": "📋",
+            "category_id": "",
+            "questions": [
+                {
+                    "custom_id": "wiek",
+                    "label": "Twój wiek",
+                    "style": "short",
+                    "placeholder": "Np. 18"
+                },
+                {
+                    "custom_id": "doswiadczenie",
+                    "label": "Doświadczenie",
+                    "style": "paragraph",
+                    "placeholder": "Opisz swoje doświadczenie na Discordzie..."
+                },
+                {
+                    "custom_id": "motywacja",
+                    "label": "Dlaczego chcesz dołączyć?",
+                    "style": "paragraph",
+                    "placeholder": "Co Cię motywuje?"
+                }
+            ]
+        },
+        {
+            "id": "inne",
+            "label": "Inne",
+            "description": "Sprawy niepasujące do innych kategorii",
+            "emoji": "📩",
+            "category_id": "",
+            "questions": [
+                {
+                    "custom_id": "tresc",
+                    "label": "Treść zgłoszenia",
+                    "style": "paragraph",
+                    "placeholder": "Opisz swoją sprawę..."
+                }
+            ]
+        }
+    ]
+}

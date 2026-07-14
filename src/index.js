@@ -45,6 +45,7 @@ await Promise.all([
     commandHandler.loadCommand('./commands/util/admin/unmute.command.js'),
     commandHandler.loadCommand('./commands/util/admin/warn.command.js'),
     commandHandler.loadCommand('./commands/util/admin/unwarn.command.js'),
+    commandHandler.loadCommand('./commands/util/admin/ticket-panel.command.js'),
 ])
 
 commandHandler.displayLoadedCommands()

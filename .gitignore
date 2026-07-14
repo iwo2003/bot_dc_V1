@@ -11,8 +11,9 @@ src/config/moderation.js
 src/config/auto-channel.js
 src/config/anti-raid.js
 src/config/games.js
+src/config/tickets.json
 
-# Logi npm / Node
+data/transcripts/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -12,7 +12,8 @@ Bot Discord do moderacji serwera — komendy slash, logi moderacji, anty-raid/an
 - **Panel właściciela** — embed z przyciskami w chacie głosowym (Text in Voice)
 - **Anty-raid / anty-spam** — ban botów reklamowych, wykrywanie raidów, spamu i podejrzanych linków
 - **Statystyki gier** — `/stats` dla LoL, Valorant, CS2, Minecraft, Fortnite (embed + obrazek)
-- **MySQL opcjonalne** — bot startuje bez bazy; warny wymagają MySQL
+- **System ticketów** — formularze (Modals), MySQL, transkrypcja HTML, przyjmij/zamknij
+- **MySQL opcjonalne** — warny i tickety wymagają bazy; reszta działa bez niej
 - **Jedna gildia** — komendy rejestrowane tylko na wyznaczonym serwerze (`GUILD_ID`)
 
 ## Wymagania
@@ -156,7 +157,33 @@ W `.env` ustaw klucze API (opcjonalnie per gra):
 
 Plik `games.js` jest w `.gitignore`.
 
-### 7. Uprawnienia bota na Discordzie
+### 7. System ticketów (wymaga MySQL)
+
+```bash
+cp src/config/tickets.example.json src/config/tickets.json
+```
+
+Uzupełnij w `tickets.json`:
+- `staffRoleIds` — role obsługujące tickety
+- `transcriptLogChannelId` — kanał na transkrypcje HTML
+- `category_id` — ID kategorii Discord dla każdego typu ticketu
+
+**Typy ticketów (przykładowe):** Pomoc, Rekrutacja, Inne
+
+**Komenda:** `/ticket-panel` (tylko administrator) — wysyła embed z menu wyboru.
+
+**Przepływ:**
+1. Użytkownik wybiera typ z menu → formularz (max 5 pytań)
+2. Bot tworzy prywatny kanał (twórca + staff)
+3. Na kanale: embed z odpowiedziami + przyciski **Przyjmij** / **Zamknij**
+4. Staff przyjmuje ticket → zapis `claimed_by` w MySQL
+5. Staff zamyka → transkrypcja HTML na kanał logów → usunięcie kanału po 5 s
+
+**Limity:** 1 otwarty ticket na użytkownika.
+
+Plik `tickets.json` jest w `.gitignore`.
+
+### 8. Uprawnienia bota na Discordzie
 
 W Developer Portal włącz intenty:
 
@@ -196,6 +223,7 @@ Po zalogowaniu bot automatycznie rejestruje komendy slash na serwerze z `GUILD_I
 | `/ping` | Test działania bota |
 | `/licencja` | Informacje o licencji i warunkach użytkowania (dla wszystkich) |
 | `/stats` | Statystyki gracza z LoL, Valorant, CS2, Minecraft lub Fortnite (dla wszystkich) |
+| `/ticket-panel` | Wysyła panel ticketów z menu (tylko administrator) |
 | `/ban` | Ban użytkownika (opcjonalnie usuwanie wiadomości 0–7 dni) |
 | `/kick` | Wyrzucenie z serwera |
 | `/mute` | Wyciszenie (timeout, max 28 dni) |
@@ -322,6 +350,8 @@ src/
 | `src/config/auto-channel.js` | Lokalne ID kanałów głosowych |
 | `src/config/anti-raid.js` | Lokalna konfiguracja anty-raid |
 | `src/config/games.js` | Lokalna konfiguracja gier |
+| `src/config/tickets.json` | Lokalna konfiguracja ticketów |
+| `data/transcripts/` | Tymczasowe pliki HTML |
 | `node_modules/` | Zależności npm |
 
 ## Licencja

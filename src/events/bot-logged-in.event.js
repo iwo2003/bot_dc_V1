@@ -2,6 +2,7 @@ import chalk from 'chalk'
 import { Events } from 'discord.js'
 import { consola } from 'consola'
 import { initDatabase } from '../db/client.js'
+import { initTickets } from '../features/tickets/ticket.service.js'
 import { initAntiRaid } from '../features/anti-raid.service.js'
 import { initGames } from '../features/games/games-stats.service.js'
 import { initAutoChannel } from '../features/auto-channel.service.js'
@@ -17,6 +18,7 @@ export default {
 
         await client.commandHandler.registerCommands()
         await initDatabase()
+        await initTickets(client)
         await initAntiRaid(client)
         await initGames(client)
         await initAutoChannel(client)

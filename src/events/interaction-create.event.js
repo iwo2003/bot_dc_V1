@@ -2,6 +2,7 @@ import { Collection, Events } from 'discord.js'
 import { consola } from 'consola'
 import { DEFAULT_COMMAND_COOLDOWN, GUILD_ID } from '../config.js'
 import { handleAutoChannelPanelInteraction } from '../features/auto-channel-panel.service.js'
+import { handleTicketInteraction } from '../features/tickets/ticket.service.js'
 
 export default {
     name: Events.InteractionCreate,
@@ -19,6 +20,9 @@ export default {
 
         if (!interaction.isChatInputCommand()) {
             try {
+                const ticketHandled = await handleTicketInteraction(interaction)
+                if (ticketHandled) return
+
                 const handled = await handleAutoChannelPanelInteraction(interaction)
                 if (handled) return
             } catch (error) {
