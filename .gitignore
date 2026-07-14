@@ -12,6 +12,7 @@ src/config/auto-channel.js
 src/config/anti-raid.js
 src/config/games.js
 src/config/tickets.json
+src/config/welcome.json
 
 data/transcripts/
 npm-debug.log*

@@ -1,0 +1,83 @@
+{
+    "enabled": true,
+    "welcome": {
+        "enabled": true,
+        "channelId": "",
+        "mentionUser": true,
+        "message": "Witaj {user} na **{server}**! ^^",
+        "dm": {
+            "enabled": false,
+            "message": "Cieszymy się, że dołączyłeś na serwer **{server}**!"
+        },
+        "image": {
+            "width": 900,
+            "height": 280,
+            "backgroundColor": "#0b0b0f",
+            "backgroundImage": "assets/welcome/background.png",
+            "backgroundOpacity": 0.35,
+            "avatar": {
+                "enabled": true,
+                "size": 72,
+                "borderColor": "#ffffff",
+                "borderWidth": 3,
+                "offsetY": 28
+            },
+            "lines": [
+                { "text": "Witaj {username}", "font": "bold 36px sans-serif", "color": "#ffffff" },
+                { "text": "na", "font": "24px sans-serif", "color": "#e0e0e0" },
+                { "text": "{server}", "font": "bold 36px sans-serif", "color": "#ffffff" }
+            ],
+            "badge": {
+                "enabled": true,
+                "text": "Jest już nas #{count}",
+                "font": "bold 16px sans-serif",
+                "textColor": "#ffffff",
+                "backgroundColor": "#000000",
+                "paddingX": 18,
+                "paddingY": 8,
+                "radius": 20,
+                "offsetBottom": 24
+            }
+        }
+    },
+    "goodbye": {
+        "enabled": true,
+        "channelId": "",
+        "mentionUser": false,
+        "message": "Do widzenia **{username}** — mamy nadzieję, że wrócisz!",
+        "dm": {
+            "enabled": false,
+            "message": "Dziękujemy za czas spędzony na **{server}**!"
+        },
+        "image": {
+            "width": 900,
+            "height": 280,
+            "backgroundColor": "#0b0b0f",
+            "backgroundImage": "assets/welcome/background.png",
+            "backgroundOpacity": 0.35,
+            "avatar": {
+                "enabled": true,
+                "size": 72,
+                "borderColor": "#ffffff",
+                "borderWidth": 3,
+                "offsetY": 28
+            },
+            "lines": [
+                { "text": "Do zobaczenia", "font": "bold 36px sans-serif", "color": "#ffffff" },
+                { "text": "{username}", "font": "bold 32px sans-serif", "color": "#ffffff" },
+                { "text": "na {server}", "font": "22px sans-serif", "color": "#cccccc" }
+            ],
+            "badge": {
+                "enabled": true,
+                "text": "Zostało nas #{count}",
+                "font": "bold 16px sans-serif",
+                "textColor": "#ffffff",
+                "backgroundColor": "#000000",
+                "paddingX": 18,
+                "paddingY": 8,
+                "radius": 20,
+                "offsetBottom": 24
+            }
+        }
+    }
+}

@@ -13,6 +13,7 @@ Bot Discord do moderacji serwera — komendy slash, logi moderacji, anty-raid/an
 - **Anty-raid / anty-spam** — ban botów reklamowych, wykrywanie raidów, spamu i podejrzanych linków
 - **Statystyki gier** — `/stats` dla LoL, Valorant, CS2, Minecraft, Fortnite (embed + obrazek)
 - **System ticketów** — formularze (Modals), MySQL, transkrypcja HTML, przyjmij/zamknij
+- **Powitania / pożegnania** — generowany obrazek (canvas) z avatar, tekstem i licznikiem członków
 - **MySQL opcjonalne** — warny i tickety wymagają bazy; reszta działa bez niej
 - **Jedna gildia** — komendy rejestrowane tylko na wyznaczonym serwerze (`GUILD_ID`)
 
@@ -183,7 +184,37 @@ Uzupełnij w `tickets.json`:
 
 Plik `tickets.json` jest w `.gitignore`.
 
-### 8. Uprawnienia bota na Discordzie
+### 8. Powitania i pożegnania (canvas)
+
+```bash
+cp src/config/welcome.example.json src/config/welcome.json
+```
+
+W `welcome.json` ustaw m.in.:
+
+| Pole | Opis |
+|------|------|
+| `welcome.channelId` | Kanał powitalny |
+| `goodbye.channelId` | Kanał pożegnań |
+| `welcome.message` / `goodbye.message` | Tekst nad obrazkiem (`{user}`, `{username}`, `{server}`, `{count}`) |
+| `welcome.mentionUser` | Ping @user w wiadomości |
+| `welcome.dm` / `goodbye.dm` | Opcjonalna wiadomość prywatna |
+| `*.image.width` | Szerokość obrazka w pikselach (domyślnie `900`) |
+| `*.image.height` | Wysokość obrazku w pikselach (domyślnie `280`) |
+| `*.image.backgroundColor` | Kolor tła, gdy brak pliku lub przed nałożeniem grafiki |
+| `*.image.backgroundImage` | Tło PNG/JPG (np. `assets/welcome/background.png`) — skalowane do `width` × `height` |
+| `*.image.backgroundOpacity` | Przezroczystość tła graficznego (`0`–`1`, domyślnie `0.35`) |
+| `*.image.lines` | Linie tekstu na obrazku (font, kolor, opcjonalnie `lineHeight`) |
+| `*.image.badge` | Badge z licznikiem (np. „Jest już nas #{count}”) |
+| `*.image.avatar` | Avatar, rozmiar, obramowanie, `offsetY` |
+
+**Rozmiar obrazka (`width` / `height`):** wartości w pikselach określają cały canvas wysyłany jako załącznik PNG. Tło (`backgroundImage`) jest rozciągane do tych wymiarów; avatar, teksty i badge układają się względem środka i krawędzi tego prostokąta. Domyślnie `900×280` daje szeroki, niski baner podobny do Discordowych powitań — dobrze mieści się w kanale bez przewijania. Przy większej wysokości (np. `400`) zostaw więcej miejsca między liniami (`lineHeight` w `lines`) albo zwiększ `avatar.offsetY` i `badge.offsetBottom`, żeby elementy się nie nachodziły. Zbyt duże wymiary (np. powyżej `2000` px) zwiększają rozmiar pliku i czas generowania.
+
+**Placeholdery:** `{user}` `{username}` `{server}` `{count}` `{tag}`
+
+Plik `welcome.json` jest w `.gitignore`.
+
+### 9. Uprawnienia bota na Discordzie
 
 W Developer Portal włącz intenty:
 
@@ -351,6 +382,7 @@ src/
 | `src/config/anti-raid.js` | Lokalna konfiguracja anty-raid |
 | `src/config/games.js` | Lokalna konfiguracja gier |
 | `src/config/tickets.json` | Lokalna konfiguracja ticketów |
+| `src/config/welcome.json` | Lokalna konfiguracja powitań |
 | `data/transcripts/` | Tymczasowe pliki HTML |
 | `node_modules/` | Zależności npm |
 

@@ -122,3 +122,28 @@ export async function getTicketsConfig() {
 export function clearTicketsConfigCache() {
     ticketsCached = null
 }
+
+/** @type {object | null} */
+let welcomeCached = null
+
+export async function getWelcomeConfig() {
+    if (welcomeCached) return welcomeCached
+
+    const localPath = path.join(__dirname, 'welcome.json')
+    const examplePath = path.join(__dirname, 'welcome.example.json')
+
+    if (!fs.existsSync(localPath) && !fs.existsSync(examplePath)) {
+        throw new Error('Brak welcome.json i welcome.example.json w src/config/.')
+    }
+
+    const target = fs.existsSync(localPath) ? localPath : examplePath
+
+    if (!fs.existsSync(localPath)) {
+        consola.warn(
+            '[welcome] Brak src/config/welcome.json — używam welcome.example.json. Skopiuj szablon i uzupełnij.',
+        )
+    }
+
+    welcomeCached = JSON.parse(fs.readFileSync(target, 'utf8'))
+    return welcomeCached
+}
