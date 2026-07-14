@@ -7,6 +7,7 @@ import { initTickets } from '../features/tickets/ticket.service.js'
 import { initAntiRaid } from '../features/anti-raid.service.js'
 import { initGames } from '../features/games/games-stats.service.js'
 import { initAutoChannel } from '../features/auto-channel.service.js'
+import { initSelfRole } from '../features/selfrole/selfrole.service.js'
 import { initWarnyScheduler } from '../features/warny.service.js'
 
 export default {
@@ -21,6 +22,7 @@ export default {
         await initDatabase()
         await initWelcome(client)
         await initTickets(client)
+        await initSelfRole(client)
         await initAntiRaid(client)
         await initGames(client)
         await initAutoChannel(client)

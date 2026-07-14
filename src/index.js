@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from 'discord.js'
+import { Client, GatewayIntentBits, Partials } from 'discord.js'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
@@ -22,7 +22,14 @@ const client = new Client({
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates,
         GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
         GatewayIntentBits.MessageContent,
+    ],
+    partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction,
+        Partials.User,
     ],
 })
 
@@ -46,6 +53,7 @@ await Promise.all([
     commandHandler.loadCommand('./commands/util/admin/warn.command.js'),
     commandHandler.loadCommand('./commands/util/admin/unwarn.command.js'),
     commandHandler.loadCommand('./commands/util/admin/ticket-panel.command.js'),
+    commandHandler.loadCommand('./commands/util/admin/selfrole.command.js'),
 ])
 
 commandHandler.displayLoadedCommands()

@@ -43,6 +43,36 @@ async function ensureSchema(p) {
             INDEX idx_tickets_user (guild_id, user_id, status)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `)
+    await p.execute(`
+        CREATE TABLE IF NOT EXISTS selfrole_panels (
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            guild_id VARCHAR(32) NOT NULL,
+            channel_id VARCHAR(32) NOT NULL,
+            message_id VARCHAR(32) NOT NULL,
+            title VARCHAR(256) NOT NULL,
+            intro TEXT NULL,
+            color INT UNSIGNED NOT NULL DEFAULT 5793266,
+            created_at BIGINT NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY uq_selfrole_message (message_id),
+            INDEX idx_selfrole_guild (guild_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `)
+    await p.execute(`
+        CREATE TABLE IF NOT EXISTS selfrole_entries (
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            panel_id INT UNSIGNED NOT NULL,
+            role_id VARCHAR(32) NOT NULL,
+            emoji_key VARCHAR(128) NOT NULL,
+            emoji_name VARCHAR(64) NULL,
+            emoji_animated TINYINT(1) NOT NULL DEFAULT 0,
+            sort_order INT NOT NULL DEFAULT 0,
+            PRIMARY KEY (id),
+            UNIQUE KEY uq_selfrole_panel_role (panel_id, role_id),
+            UNIQUE KEY uq_selfrole_panel_emoji (panel_id, emoji_key),
+            INDEX idx_selfrole_panel (panel_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `)
 }
 
 /**
@@ -52,7 +82,7 @@ async function ensureSchema(p) {
 export async function initDatabase() {
     if (!DB_HOST) {
         consola.warn(
-            '[db] Brak DB_HOST w .env — bot działa bez MySQL (warny i tickety wymagają bazy).',
+            '[db] Brak DB_HOST w .env — bot działa bez MySQL (warny, tickety i self-role wymagają bazy).',
         )
         return
     }

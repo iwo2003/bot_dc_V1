@@ -14,7 +14,8 @@ Bot Discord do moderacji serwera — komendy slash, logi moderacji, anty-raid/an
 - **Statystyki gier** — `/stats` dla LoL, Valorant, CS2, Minecraft, Fortnite (embed + obrazek)
 - **System ticketów** — formularze (Modals), MySQL, transkrypcja HTML, przyjmij/zamknij
 - **Powitania / pożegnania** — generowany obrazek (canvas) z avatar, tekstem i licznikiem członków
-- **MySQL opcjonalne** — warny i tickety wymagają bazy; reszta działa bez niej
+- **Self-role** — panele z embedem i reakcjami emoji (MySQL, wiele paneli)
+- **MySQL opcjonalne** — warny, tickety i self-role wymagają bazy; reszta działa bez niej
 - **Jedna gildia** — komendy rejestrowane tylko na wyznaczonym serwerze (`GUILD_ID`)
 
 ## Wymagania
@@ -214,13 +215,34 @@ W `welcome.json` ustaw m.in.:
 
 Plik `welcome.json` jest w `.gitignore`.
 
-### 9. Uprawnienia bota na Discordzie
+### 9. Self-role (reakcje + MySQL)
+
+Panel jak na Discordzie: embed z listą `emoji — @rola` i reakcje pod wiadomością. Kliknięcie reakcji **dodaje** rolę, usunięcie reakcji **zdejmuje** rolę. Użytkownik może mieć **dowolnie wiele** ról z jednego panelu. Możesz utworzyć **wiele paneli** (np. gry, powiadomienia).
+
+**Wymaga MySQL** — tabele `selfrole_panels` i `selfrole_entries` tworzą się automatycznie przy starcie bota.
+
+| Komenda | Opis |
+|---------|------|
+| `/selfrole panel` | Tworzy pusty panel na bieżącym kanale (`tytul`, opcjonalnie `opis`, `kolor`) |
+| `/selfrole add` | Dodaje rolę do panelu (`wiadomosc` = ID wiadomości, `rola`, `emoji`) |
+| `/selfrole remove` | Usuwa rolę z panelu |
+| `/selfrole refresh` | Odświeża embed i reakcje (po ręcznych zmianach) |
+| `/selfrole delete` | Usuwa panel z bazy i wiadomość z kanału |
+
+**Emoji:** unicode (`🤠`), nazwa serwera (`:TFT:`) lub pełny format (`<:TFT:123456789>`).
+
+**Kolor embeda:** `#5865F2` lub liczba dziesiętna (np. `5793266`).
+
+Rola musi być **niżej** niż najwyższa rola bota. Bot potrzebuje uprawnienia **Zarządzaj rolami**.
+
+### 10. Uprawnienia bota na Discordzie
 
 W Developer Portal włącz intenty:
 
 - **Server Members Intent** (wymagany)
 - **Message Content Intent** (wymagany dla anty-spam i anty-link)
 - **Guild Voice States** (wymagany dla kanałów głosowych)
+- **Guild Message Reactions** (wymagany dla self-role)
 
 Na serwerze bot potrzebuje uprawnień m.in.:
 
@@ -229,6 +251,7 @@ Na serwerze bot potrzebuje uprawnień m.in.:
 - Moderate Members
 - Manage Messages (usuwanie spamu / linków)
 - Manage Channels
+- Manage Roles (self-role)
 - Send Messages (logi + Text in Voice w kanałach głosowych)
 - Connect (dołączanie do kanałów głosowych)
 
@@ -255,6 +278,11 @@ Po zalogowaniu bot automatycznie rejestruje komendy slash na serwerze z `GUILD_I
 | `/licencja` | Informacje o licencji i warunkach użytkowania (dla wszystkich) |
 | `/stats` | Statystyki gracza z LoL, Valorant, CS2, Minecraft lub Fortnite (dla wszystkich) |
 | `/ticket-panel` | Wysyła panel ticketów z menu (tylko administrator) |
+| `/selfrole panel` | Tworzy panel self-role na kanale (tylko administrator) |
+| `/selfrole add` | Dodaje rolę i reakcję do panelu |
+| `/selfrole remove` | Usuwa rolę z panelu |
+| `/selfrole refresh` | Odświeża embed i reakcje panelu |
+| `/selfrole delete` | Usuwa panel i wiadomość |
 | `/ban` | Ban użytkownika (opcjonalnie usuwanie wiadomości 0–7 dni) |
 | `/kick` | Wyrzucenie z serwera |
 | `/mute` | Wyciszenie (timeout, max 28 dni) |
@@ -341,23 +369,32 @@ src/
 ├── commands/util/
 │   ├── test/ping.command.js
 │   ├── info/licencja.command.js
-│   └── admin/                    # ban, kick, mute, unmute, warn, unwarn
+│   └── admin/                    # ban, kick, mute, selfrole, ticket-panel, …
 ├── config/
 │   ├── moderation.example.js
 │   ├── auto-channel.example.js
 │   ├── anti-raid.example.js
 │   ├── games.example.js
+│   ├── welcome.example.json
 │   └── load-config.js
 ├── db/
 │   ├── client.js
-│   └── warny.repo.js
+│   ├── warny.repo.js
+│   ├── tickets.repo.js
+│   └── selfrole.repo.js
 ├── events/
 │   ├── interaction-create.event.js
 │   ├── message-create.event.js
+│   ├── message-reaction-add.event.js
+│   ├── message-reaction-remove.event.js
 │   ├── guild-member-add.event.js
+│   ├── guild-member-remove.event.js
 │   ├── voice-state-update.event.js
 │   └── bot-logged-in.event.js
 ├── features/
+│   ├── selfrole/selfrole.service.js
+│   ├── welcome/
+│   ├── tickets/
 │   ├── warny.service.js
 │   ├── moderation-log.service.js
 │   ├── anti-raid.service.js
